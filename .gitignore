@@ -1,0 +1,55 @@
+# Python bytecode files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+.virtualenv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+*.tar.gz
+
+# PyInstaller
+*.spec
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# IPython profile directory
+profile_default/
+ipython_config.py
+
+# Python environment files
+*.env
+*.venv
+.envrc
+venv/*
+
+# Dependency directories
+node_modules/
+
+# Miscellaneous
+*.bak
+*.swp

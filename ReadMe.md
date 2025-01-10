@@ -7,3 +7,5 @@ This project uses the ARIMA (AutoRegressive Integrated Moving Average) model to 
 ---
 
 ## **Features**
+
+Predict

@@ -26,6 +26,11 @@ Use the Partial Auto-Correlation Function (PACF) to determine p, the number of l
 
 Use the Auto-Correlation Function (ACF) to determine q, the number of lagged forecast errors used in the MA (Moving Average) term.
 
-
 # p is the number of lags at which the PACF cuts off.
+
 # q is the number of lags at which the ACF cuts off.
+
+Final Model: ARIMA(2, 1, 0)
+MAPE: 5.21%
+Residuals: White noise (no autocorrelation)
+Forecast: Closely matches actual values

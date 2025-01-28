@@ -53,3 +53,5 @@ node_modules/
 # Miscellaneous
 *.bak
 *.swp
+
+.streamlit/

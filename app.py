@@ -128,6 +128,7 @@ if uploaded_file:
                     st.pyplot(fig_acf_pacf)
                 else:
                     st.error("The series is still not stationary. Further transformations may be needed.")
+                    
     st.header("ARIMA Model Fitting")
     st.text("*Only Fit When Data is Stationary*")
     st.subheader("Select Arima Parameters (p, d, q)")
@@ -140,13 +141,55 @@ if uploaded_file:
     with col3:
         q = st.number_input("Enter valeu of q: ",  min_value=0)
     
+    
     if st.button("Fit Arima Model"):
         try:
-            model = ARIMA(df[column_to_test], order=(p, d, q))
+            train = df[column_to_test][:-12]  # 12 Months
+            test = df[column_to_test][-12:]
+            
+            # Fitting the model 
+            model = ARIMA(train, order=(p, d, q))
             results = model.fit()
             
-            st.subheader("ARIMA Model Result Summary")
-            st.write(results.summary())
+            forecast = results.forecast(steps=12)
+            
+            st.subheader("Actual vs Forecasted Values")
+            fig_forecast, ax_forecast = plt.subplots(figsize=(10, 6))
+            ax_forecast.plot(test.index, test, label='Actual')
+            ax_forecast.plot(test.index, forecast, label='Forecast')
+            ax_forecast.set_title('Actual vs Forecasted Crude Oil Prices')
+            ax_forecast.set_xlabel('Date')
+            ax_forecast.set_ylabel('Price ($/bbl)')
+            ax_forecast.legend()
+            st.pyplot(fig_forecast)
+            
+            # Get MAPE (Error Margin), in this case 5.21%
+            mape = np.mean(np.abs((test - forecast) / test)) * 100
+            st.metric("Mean Absolute Percentage Error (MAPE)", f"{mape:.2f}%")
+            
+            df.index = pd.date_range(start=df.index[0], periods=len(df), freq='MS')
+
+            # I Refit the model again but on the entire database instead of splitting it into training and testing sets.
+            final_model = ARIMA(df['Crude oil, average'], order=(2, 1, 0))
+            final_results = final_model.fit()
+
+            # Forecast for the next 12 months
+          
+            df.index = pd.date_range(start=df.index[0], periods=len(df), freq='MS')
+            future_forecast = final_results.forecast(steps=12)
+            fig_final_forecast, ax_final_forecast = plt.subplots(figsize=(10, 6))
+            ax_final_forecast.plot(df[column_to_test], label='Historical Data')
+            ax_final_forecast.plot(future_forecast.index, future_forecast, label='Forecast', color='red')
+            ax_final_forecast.set_title('Crude Oil Price Forecast (Next 12 Months)')
+            ax_final_forecast.set_xlabel('Date')
+            ax_final_forecast.set_ylabel('Price ($/bbl)')
+            ax_final_forecast.legend()
+            st.pyplot(fig_final_forecast)
+
+            
+            st.subheader("Forecasted Values")
+            st.write(future_forecast)
+
         
         except Exception as e:
             st.error(f"Error fitting ARIMA model: {e}")

@@ -130,7 +130,7 @@ if uploaded_file:
                     st.error("The series is still not stationary. Further transformations may be needed.")
     st.header("ARIMA Model Fitting")
     st.text("*Only Fit When Data is Stationary*")
-    st.subheader("Select Arima Parameters (p,d,q)")
+    st.subheader("Select Arima Parameters (p, d, q)")
     col1, col2, col3 = st.columns(3)
     
     with col1:

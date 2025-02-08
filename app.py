@@ -24,8 +24,11 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+dataset_options = {
+    "Crude Oil Prices": "https://thedocs.worldbank.org/en/doc/5d903e848db1d1b83e0ec8f744e55570-0350012021/related/CMO-Pink-Sheet-December-2024.pdf"
+}
 
-st.image("prices.jpg", use_container_width=True, width=400)
+st.image("NightRefinery.jpg", use_container_width=True, width=400)
 
 # To upload file on sidebar
 with st.sidebar:
@@ -33,19 +36,33 @@ with st.sidebar:
     uploaded_file = st.file_uploader("Upload World Bank Pink Sheet (Excel)", type=["xlsx"])
     if uploaded_file:
         st.success("File uploaded successfully!")
+        st.text("*If AFOSHEET is found, ignore it and select other sheets.*")
 
 # Main content
 if uploaded_file:
-    # Load and clean data
+   
     xls = pd.ExcelFile(uploaded_file, engine='openpyxl')
     sheet_name = st.sidebar.selectbox("Select Sheet", xls.sheet_names)
     df = pd.read_excel(uploaded_file, sheet_name=sheet_name, skiprows=4, engine='openpyxl')
-    
-    
+
+    # Rename and clean columns
     df.rename(columns={"Unnamed: 0": "Year"}, inplace=True)
     df = df.drop([0, 1])
     df.replace('…', pd.NA, inplace=True)
     df.fillna(method='bfill', inplace=True)
+
+    # Convert 'Year' column to datetime
+    df['formatted_date'] = pd.to_datetime(df['Year'], format='%YM%m', errors='coerce') # this format is based off 1960M01..
+
+   
+    df.dropna(subset=['formatted_date'], inplace=True)
+
+    # Format the date as Period (e.g., '1960-01') for display
+    df['formatted_date'] = df['formatted_date'].dt.to_period('M').astype(str) # this format is based off 1960M01..
+
+    # We set the new formatted_date column as the index
+    df.set_index('formatted_date', inplace=True)
+    df.index = pd.to_datetime(df.index, format='%Y-%m')
 
     # Display cleaned data
     st.header("Cleaned Data")
@@ -57,9 +74,9 @@ if uploaded_file:
     if column_to_plot:
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.lineplot(data=df, x="Year", y=column_to_plot, ax=ax, marker='o')
-        ax.set_title(f"Trend of Crude Oil Prices Over Years", fontsize=16)
+        ax.set_title(f"Trend of {column_to_plot} Over Years", fontsize=16)
         ax.set_xlabel("Year", fontsize=14)
-        ax.set_ylabel("$/bbl", fontsize=14)
+        ax.set_ylabel("Price in $USD", fontsize=14)
         ax.grid(True)
         st.pyplot(fig)
 
@@ -157,7 +174,7 @@ if uploaded_file:
             fig_forecast, ax_forecast = plt.subplots(figsize=(10, 6))
             ax_forecast.plot(test.index, test, label='Actual')
             ax_forecast.plot(test.index, forecast, label='Forecast')
-            ax_forecast.set_title('Actual vs Forecasted Crude Oil Prices')
+            ax_forecast.set_title('Actual vs Forecasted ' + column_to_test + ' Prices')
             ax_forecast.set_xlabel('Date')
             ax_forecast.set_ylabel('Price ($/bbl)')
             ax_forecast.legend()
@@ -170,7 +187,7 @@ if uploaded_file:
             df.index = pd.date_range(start=df.index[0], periods=len(df), freq='MS')
 
             # I Refit the model again but on the entire database instead of splitting it into training and testing sets.
-            final_model = ARIMA(df['Crude oil, average'], order=(2, 1, 0))
+            final_model = ARIMA(df[column_to_test], order=(2, 1, 0))
             final_results = final_model.fit()
 
             # Forecast for the next 12 months
@@ -180,14 +197,14 @@ if uploaded_file:
             fig_final_forecast, ax_final_forecast = plt.subplots(figsize=(10, 6))
             ax_final_forecast.plot(df[column_to_test], label='Historical Data')
             ax_final_forecast.plot(future_forecast.index, future_forecast, label='Forecast', color='red')
-            ax_final_forecast.set_title('Crude Oil Price Forecast (Next 12 Months)')
+            ax_final_forecast.set_title(column_to_test + ' Price Forecast (Next 12 Months)')
             ax_final_forecast.set_xlabel('Date')
-            ax_final_forecast.set_ylabel('Price ($/bbl)')
+            ax_final_forecast.set_ylabel('Price')
             ax_final_forecast.legend()
             st.pyplot(fig_final_forecast)
 
             
-            st.subheader("Forecasted Values")
+            st.subheader("Forecasted Values One Year Ahead")
             st.write(future_forecast)
 
         

@@ -11,7 +11,10 @@ from statsmodels.tsa.arima.model import ARIMA
 st.set_page_config(page_title="ARIMA Crude Oil Price Forecasting", layout="wide")
 
 
+
+
 st.markdown("<h1 style='text-align: center; margin-top: -20px;'>ARIMA Crude Oil Price Forecasting</h1>", unsafe_allow_html=True)
+# st.markdown("Crude Oil Forecasting Made Easy")
 st.markdown(
     """
     <style>
@@ -20,6 +23,20 @@ st.markdown(
         padding: 5px;
         
     }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown(
+    """
+    <div style="text-align: center; font-size: 20px; font-weight: bold;">
+        Using World Bank Pink Sheet Data
+    </div>
+    <style>
+        img {
+            border-radius: 15px; 
+            padding: 10px;
+        }
     </style>
     """,
     unsafe_allow_html=True
@@ -37,8 +54,10 @@ with st.sidebar:
     if uploaded_file:
         st.success("File uploaded successfully!")
         st.text("*If AFOSHEET is found, ignore it and select other sheets.*")
+    st.sidebar.markdown("Recommended Dataset Example Link:")
+    st.markdown("[World Bank Dataset - December 2024](https://thedocs.worldbank.org/en/doc/5d903e848db1d1b83e0ec8f744e55570-0350012021/related/CMO-Pink-Sheet-December-2024.pdf)")
 
-# Main content
+
 if uploaded_file:
    
     xls = pd.ExcelFile(uploaded_file, engine='openpyxl')
@@ -150,11 +169,11 @@ if uploaded_file:
     st.text("*Only Fit When Data is Stationary*")
     st.subheader("Select Arima Parameters (p, d, q)")
     col1, col2, col3 = st.columns(3)
-    
+    st.info("Adjust model parameters and see real-time changes.")
     with col1:
         p = st.number_input("Enter value of p: ",  min_value=0)
     with col2:
-        d = st.number_input("Enter value of d (Based on Differencing Count): ",  min_value=0)
+        d = st.number_input("Enter value of d: ",  min_value=0)
     with col3:
         q = st.number_input("Enter valeu of q: ",  min_value=0)
     
@@ -212,3 +231,13 @@ if uploaded_file:
             st.error(f"Error fitting ARIMA model: {e}")
 else:
     st.info("Please upload an Excel file to get started. (In Sidebar)")
+st.markdown("---")
+st.markdown("© 2025 | Developed by [Ibrahim Abou Zahr](https://www.linkedin.com/in/ibrahim-abouzahr-dev/)")
+st.markdown(
+    """
+    ### 📘 Step-by-Step Guide  
+    [Read my article here](https://your-article-link.com)
+    """,
+    unsafe_allow_html=True,
+)
+

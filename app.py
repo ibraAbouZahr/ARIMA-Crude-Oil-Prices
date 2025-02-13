@@ -55,7 +55,7 @@ with st.sidebar:
         st.success("File uploaded successfully!")
         st.text("*If AFOSHEET is found, ignore it and select other sheets.*")
     st.sidebar.markdown("Recommended Dataset Example Link:")
-    st.markdown("[World Bank Dataset - December 2024](https://thedocs.worldbank.org/en/doc/5d903e848db1d1b83e0ec8f744e55570-0350012021/related/CMO-Pink-Sheet-December-2024.pdf)")
+    st.markdown("[World Bank Dataset - December 2024](https://thedocs.worldbank.org/en/doc/5d903e848db1d1b83e0ec8f744e55570-0350012021/related/CMO-Historical-Data-Monthly.xlsx)")
 
 
 if uploaded_file:

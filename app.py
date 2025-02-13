@@ -45,7 +45,7 @@ dataset_options = {
     "Crude Oil Prices": "https://thedocs.worldbank.org/en/doc/18675f1d1639c7a34d463f59263ba0a2-0050012025/related/CMO-Historical-Data-Monthly.xlsx"
 }
 
-st.image("NightRefinery.jpg", use_container_width=True, width=400)
+st.image("NightRefinery.jpg", use_container_width=True)
 
 # To upload file on sidebar
 with st.sidebar:

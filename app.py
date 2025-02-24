@@ -236,7 +236,7 @@ st.markdown("© 2025 | Developed by [Ibrahim Abou Zahr](https://www.linkedin.com
 st.markdown(
     """
     ### 📘 Step-by-Step Guide  
-    [Read my article here](https://your-article-link.com)
+    [Read my article here](https://medium.com/data-science-collective/forecasting-crude-oil-prices-with-arima-a-step-by-step-guide-57d7650aac1c)
     """,
     unsafe_allow_html=True,
 )
